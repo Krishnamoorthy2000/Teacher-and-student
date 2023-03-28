@@ -2,8 +2,8 @@ import './App.css';
 import StudentsComponents from './Student Components/StudentsComponents';
 import { Route, Switch } from 'react-router-dom';
 import { AddStudents } from './Student Components/AddStudents';
-import { StudentsData, TeachersData } from './data/Data';
-import { useState } from 'react';
+import {  TeachersData } from './data/Data';
+import { useState,useEffect} from 'react';
 import { StudentDetails } from './Student Components/StudentDetails';
 import EditStudent from './Student Components/EditStudent';
 import MainPage from './MainPage';
@@ -14,8 +14,22 @@ import EditTeacher from './Teachers Components/EditTeachers';
 
 
 function App() {
-  const [student, setStudent] = useState(StudentsData);
+  const [student, setStudent] = useState([]);
   const [teacher, setTeacher] = useState(TeachersData);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://641eba77ad55ae01ccaeda8b.mockapi.io/Data');
+        const data = await response.json();
+        setStudent(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+  
   return (
     <div className="App">
 

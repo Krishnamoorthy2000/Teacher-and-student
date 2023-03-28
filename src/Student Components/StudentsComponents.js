@@ -2,47 +2,58 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import StudentsBase from "../StudentsBase";
 
+const StudentsComponent = ({ student, setStudents }) => {
+  const history = useHistory();
 
-export default function StudentsComponent({student, setStudent}) {
-    const history = useHistory();
-    
+  const handleDelete = (id) => {
+    fetch(`https://641eba77ad55ae01ccaeda8b.mockapi.io/Data/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then(() => {
+        const filteredStudents = student.filter((student) => student.id !== id);
+        setStudents(filteredStudents);
+      })
+      .catch((error) => console.log(error));
+  };
 
-    const deleteStudent = (idx)=>{
-    const deletedStudentdata = student.filter((stud)=>stud.id !== idx)
-    setStudent(deletedStudentdata);
+  return (
+    <StudentsBase title="Student List">
+      <div className="user-content">
+        {student.map((student) => (
+          <div key={student.id} className="user-card">
+            <h1>{student.name}</h1>
+            <p>DOB: {student.dob}</p>
+            <p>Gender: {student.gender}</p>
+            <p>E-mail: {student.email}</p>
+            <p>Contact: {student.contact}</p>
+            <p>Age: {student.age}</p>
+            <p>Address: {student.address}</p>
 
-}
-return (
-        <StudentsBase
-            title="Student list">
-            <div className="user-content">
-                {student.map((student, idx) => (
-                    <div key = {idx}className="user-card">
-                        <h1>{student.name}</h1>
-                        <p>dob : {student.dob}</p>
-                        <p>gender : {student.gender}</p>
-                        <p>E-mail : {student.email}</p>
-                        <p>contact : {student.contact}</p>
-                        <p>age : {student.age}</p>
-                        <p>address : {student.address}</p>
+            <div className="btn-group">
+              <button
+                className="btn view-btn"
+                onClick={() => history.push(`/student/${student.id}`)}
+              >
+                View
+              </button>
 
-                        <div className="btn-group">
-                           <button className="btn view-btn"
-                            onClick={()=>history.push(`/student/${idx}`)}>                           
-                            View</button>
+              <button
+                className="btn edit-btn"
+                onClick={() => history.push(`/editStudent/${student.id}`)}
+              >
+                Edit
+              </button>
 
-                            <button className="btn edit-btn"
-                             onClick={()=>history.push(`/editStudent/${student.id}`)}>                            
-                             Edit</button>
-
-                            <button className="btn del-btn"
-                             onClick={()=>deleteStudent(student.id)}>
-                             Delete</button>
-
-                        </div>
-                    </div>
-                ))}
+              <button className="btn del-btn" onClick={() => handleDelete(student.id)}>
+                Delete
+              </button>
             </div>
-        </StudentsBase>
-    )
-}
+          </div>
+        ))}
+      </div>
+    </StudentsBase>
+  );
+};
+
+export default StudentsComponent;

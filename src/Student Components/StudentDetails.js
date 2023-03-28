@@ -5,7 +5,7 @@ import StudentsBase from "../StudentsBase";
 
 export function StudentDetails({student}){
     const {id} =  useParams();
-    const person = student[id];
+    const person = student[id-1];
     const history = useHistory();
     return (
         <StudentsBase
